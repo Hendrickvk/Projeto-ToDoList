@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_to_do_list/widgets/task_widgets.dart';
-
 import '../data/firestor.dart';
 
 // ignore: must_be_immutable
@@ -27,7 +26,7 @@ class Stream_note extends StatelessWidget {
                   onDismissed: (direction) {
                     Firestore_Datasource().delete_note(note.id);
                   },
-                  child: Task_Widget(note));
+                  child: Task_Widget(note, heroTag: ''));
             },
             itemCount: noteslist.length,
           );
