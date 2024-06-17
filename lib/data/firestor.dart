@@ -21,7 +21,7 @@ class Firestore_Datasource {
     }
   }
 
-  Future<bool> AddNote(String subtitle, String title, int image) async {
+  Future<bool> AddNote(String subtitle, String title, int image, String? path) async {
     try {
       var uuid = Uuid().v4();
       DateTime data = new DateTime.now();
@@ -37,6 +37,7 @@ class Firestore_Datasource {
         'image': image,
         'time': '${data.hour}:${data.minute}',
         'title': title,
+        'imagePath': path
       });
       return true;
     } catch (e) {
@@ -56,6 +57,7 @@ class Firestore_Datasource {
           data['image'],
           data['title'],
           data['isDon'],
+          data['imagePath']
         );
       }).toList();
       return notesList;
@@ -90,7 +92,7 @@ class Firestore_Datasource {
   }
 
   Future<bool> Update_Note(
-      String uuid, int image, String title, String subtitle) async {
+      String uuid, int image, String title, String subtitle, String? path) async {
     try {
       DateTime data = new DateTime.now();
       await _firestore
@@ -103,6 +105,7 @@ class Firestore_Datasource {
         'subtitle': subtitle,
         'title': title,
         'image': image,
+        'imagePath': path
       });
       return true;
     } catch (e) {
