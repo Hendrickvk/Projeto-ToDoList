@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_to_do_list/const/colors.dart';
 import 'package:flutter_to_do_list/data/firestor.dart';
@@ -7,7 +8,7 @@ import 'package:flutter_to_do_list/screen/edit_screen.dart';
 class Task_Widget extends StatefulWidget {
   final Note _note;
 
-  Task_Widget(this._note, {Key? key}) : super(key: key);
+  Task_Widget(this._note, {Key? key, required String heroTag}) : super(key: key);
 
   @override
   State<Task_Widget> createState() => _Task_WidgetState();
@@ -52,7 +53,6 @@ class _Task_WidgetState extends State<Task_Widget> {
         );
       },
       onDismissed: (direction) {
-        // Excluir a tarefa se a confirmação for recebida
         if (direction == DismissDirection.endToStart) {
           Firestore_Datasource().delete_note(widget._note.id);
           ScaffoldMessenger.of(context).showSnackBar(
@@ -89,10 +89,8 @@ class _Task_WidgetState extends State<Task_Widget> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
             children: [
-              // image
-              imageee(),
+              imageWidget(),
               SizedBox(width: 25),
-              // title and subtitle
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,12 +121,13 @@ class _Task_WidgetState extends State<Task_Widget> {
                     Text(
                       widget._note.subtitle,
                       style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.grey.shade400),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey.shade400,
+                      ),
                     ),
                     Spacer(),
-                    edit_time()
+                    edit_time(),
                   ],
                 ),
               ),
@@ -152,10 +151,7 @@ class _Task_WidgetState extends State<Task_Widget> {
               borderRadius: BorderRadius.circular(18),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 6,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: Row(
                 children: [
                   Image.asset('images/icon_time.png'),
@@ -175,9 +171,11 @@ class _Task_WidgetState extends State<Task_Widget> {
           SizedBox(width: 20),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => Edit_Screen(widget._note),
-              ));
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Edit_Screen(widget._note),
+                ),
+              );
             },
             child: Container(
               width: 90,
@@ -187,10 +185,7 @@ class _Task_WidgetState extends State<Task_Widget> {
                 borderRadius: BorderRadius.circular(18),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 child: Row(
                   children: [
                     Image.asset('images/icon_edit.png'),
@@ -212,14 +207,16 @@ class _Task_WidgetState extends State<Task_Widget> {
     );
   }
 
-  Widget imageee() {
+  Widget imageWidget() {
     return Container(
       height: 130,
       width: 100,
       decoration: BoxDecoration(
         color: Colors.white,
         image: DecorationImage(
-          image: AssetImage('images/${widget._note.image}.png'),
+          image: widget._note.imagePath != null
+              ? FileImage(File(widget._note.imagePath!))
+              : AssetImage('images/${widget._note.image}.png') as ImageProvider,
           fit: BoxFit.cover,
         ),
       ),
